@@ -49,6 +49,9 @@ def checkpi(est_pi):
 
 def numdiff(num1, num2):
 
+    if num1 == 0 or num2 == 0:
+        return 0
+
     num1_str = str(num1)
     num2_str = str(num2)
 

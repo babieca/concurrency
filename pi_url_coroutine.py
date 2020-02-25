@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
     try:
         elapsed, equal_digits = main(addr=args.addr, port=args.port, max_open_sockets=args.limit, delay=args.delay, random_delay=args.random, numreq=args.numreq)
-        logger.info("Total Req.={:,} | Time={:,.6f} sec, | diff. digit={:,}".format(args.numreq, elapsed, equal_digits))
+        logger.info("Total Req.={:,} | Time={:,.6f} sec, | equal digits={:,}".format(args.numreq, elapsed, equal_digits))
 
     except KeyboardInterrupt:
         pass
