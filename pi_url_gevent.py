@@ -6,7 +6,7 @@ import time
 import math
 import random
 import gevent
-from gevent.threadpool import ThreadPool
+import multiprocessing
 import logging
 from decimal import *
 from blocking_socket import blocking_socket
@@ -28,7 +28,7 @@ def ramanuja():
             den = math.factorial(k) ** 4 * 396 ** (4 * k)
             term = factor * Decimal(num) / Decimal(den)
             total += term
-            gevent.sleep(0.001)
+            gevent.sleep(0.0000001)
             k += 1
 
     except gevent.GreenletExit:
@@ -46,18 +46,19 @@ def main(addr='127.0.0.1', port=8080, max_open_sockets=2000, delay=0.0, random_d
 
     g1 = gevent.spawn(ramanuja)
 
-    for i, pool in enumerate(pool_fd):
+    for i, group in enumerate(pool_fd):
         g2 = []
-        for j in range(pool):
+        for j in range(group):
             delay = round(random.random(), 2) if random_delay else delay
-            path = 'pool-{}-of-{}/req-{}-of-{}/?delay={}'.format(i, len(pool_fd), j, pool, delay)
+            path = 'pool-{}-of-{}/req-{}-of-{}/?delay={}'.format(i, len(pool_fd), j, group, delay)
             g2.append(gevent.spawn(blocking_socket, addr, port, path))
         gevent.joinall(g2)
 
     g1.kill()
+    g1.join()
 
     elapsed = time.time() - start
-    est_pi = g1.value
+    est_pi = g1.get()
     real_pi = g2[0].value
     equal_digits = numdiff(est_pi, real_pi)
 
